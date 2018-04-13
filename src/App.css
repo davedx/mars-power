@@ -33,3 +33,7 @@ button:hover {
   padding: 10px 20px;
   margin-top: 50px;
 }
+select {
+  font-size: 16px;
+  margin-left: 5px;
+}

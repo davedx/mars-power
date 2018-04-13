@@ -5,7 +5,8 @@ const caps = {
   },
   pvArray: {
     kwPerUnit: 5.0,
-    mass: 30
+    mass: 30,
+    area: 1.5 * 15 // 15 panels
   },
   battery: {
     // Tesla 100 battery pack
@@ -15,7 +16,7 @@ const caps = {
   sabatier: {
     tonPerMWh: 1/17,
     kWPerUnit: 0.7,
-    mass: 1
+    mass: 50
   },
   colonist: {
     kWPerUnit: 3,

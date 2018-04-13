@@ -104,7 +104,10 @@ class App extends React.Component {
     const kilopowerKg = this.state.kilopower * caps.kilopower.mass
     const pvArrayKg = this.state.pvArray * caps.pvArray.mass
     const batteryKg = this.state.battery * caps.battery.mass
-    const totalMassKg = kilopowerKg + pvArrayKg + batteryKg
+    const sabatierKg = this.state.sabatier * caps.sabatier.mass
+    const colonistKg = this.state.colonist * caps.colonist.mass
+    const totalMassKg = kilopowerKg + pvArrayKg + batteryKg + sabatierKg + colonistKg
+    const pvArea = this.state.pvArray * caps.pvArray.area
 
     const sabatierKw = this.state.sabatier * caps.sabatier.kWPerUnit
     const colonistKw = this.state.colonist * caps.colonist.kWPerUnit
@@ -114,9 +117,9 @@ class App extends React.Component {
         <div className='controls'>
           <h3>Simulation parameters</h3>
           <h4>Supply</h4>
-          <div>Target MAX: 50 kWe</div>
-          <div>Actual MAX: {maxKwe} kWe</div>
+          <div>Colony kWp: {maxKwe} kWe</div>
           <div>Mass: {totalMassKg} kg</div>
+          <div>PV area: {pvArea} m<sup>2</sup></div>
           <div className='control'>
             <label>Kilopower units (10 kWe)</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'kilopower')}>
@@ -139,23 +142,20 @@ class App extends React.Component {
             <div>{batteryStorageKwh} kWh</div>
           </div>
           <div className='control'>
-            <label>Battery recharge strategy</label>
-            <p>Recharge to MAX at >50% PV output</p>
-          </div>
-          <div className='control'>
-            <label>Battery discharge strategy</label>
-            <p>Discharge at 5%/hr</p>
+            <label>Battery strategy</label>
+            <div>• Recharge when excess supply</div>
+            <div>• Discharge for habitat only if demand &gt; supply</div>
           </div>
           <h4>Demand</h4>
           <div className='control'>
-            <label>ISRU Sabatier CH<sub>4</sub>/Water</label>
+            <label>ISRU Sabatier CH<sub>4</sub> units</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'sabatier')}>
               {ten.map(n => <option key={n}>{n}</option>)}
             </select>
             <div>-{sabatierKw} kWe</div>
           </div>
           <div className='control'>
-            <label>Life support</label>
+            <label>Life support, persons</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'colonist')}>
               {ten.map(n => <option key={n}>{n}</option>)}
             </select>
@@ -182,6 +182,7 @@ class App extends React.Component {
         <h4>References</h4>
         <ol>
           <li><a href='https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20160012354.pdf'>Nuclear Systems Kilopower Overview</a></li>
+          <li><a href='https://www.zonnepanelen.net/nl/zonnepaneel/sunpower-x21-335-blk/'>Solar panel example (SunPower X21)</a></li>
         </ol>
       </div>
     </div>

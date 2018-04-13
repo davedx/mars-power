@@ -60,7 +60,7 @@ const calculateOutput = (params) => {
       if (params.env.currentCharge > 0
         && priorities[i].usesBattery) {
         let batteryDelta = Math.min(params.env.currentCharge, priorities[i].value - consumed)
-        console.log(`Dispatching battery for ${name}: ${batteryDelta}`)
+        //console.log(`Dispatching battery for ${name}: ${batteryDelta}`)
         params.env.currentCharge -= batteryDelta
         consumed += batteryDelta
         batteryOutputKw += batteryDelta
