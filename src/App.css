@@ -1,0 +1,35 @@
+* {
+  box-sizing: border-box;
+}
+.controls {
+  width: 20%;
+  display: inline-block;
+  vertical-align: top;
+  padding: 10px 20px;
+}
+.control {
+  margin: 10px 0;
+}
+button {
+  font-size: 20px;
+  background: white;
+  border: 1px solid black;
+}
+button:hover {
+  background: #fdd;
+  cursor: pointer;
+}
+.report {
+  width: 78%;
+  border: 1px solid #C77;
+  display: inline-block;
+  padding: 10px 20px;
+  vertical-align: top;
+}
+.output-pt {
+  display: inline-block;
+}
+.refs {
+  padding: 10px 20px;
+  margin-top: 50px;
+}
