@@ -30,6 +30,7 @@ const data = {
       borderColor: 'rgba(25,25,192,1)',
       borderCapStyle: 'butt',
       borderDash: [],
+      borderWidth: 1,
       borderDashOffset: 0.0,
       borderJoinStyle: 'miter',
       pointBorderColor: 'rgba(25,25,225,1)',

@@ -10,11 +10,11 @@ const ten = [0,1,2,3,4,5,6,7,8,9,10]
 const twenty = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 Chart.defaults.scale.ticks.autoSkipPadding = 20;
-Chart.scaleService.updateScaleDefaults('linear', {
-    ticks: {
-        min: 0
-    }
-});
+// Chart.scaleService.updateScaleDefaults('linear', {
+//     ticks: {
+//         min: 0
+//     }
+// });
 
 const Report = (props) => {
   data.labels = props.labels
@@ -22,7 +22,7 @@ const Report = (props) => {
   data.datasets[1].data = props.batteryCharge
   options.scales.yAxes[0].ticks.max = Math.ceil(_.max(props.output)/10)*10
   options.scales.yAxes[1].ticks.max = Math.ceil(_.max(props.batteryCharge)/10) * 10
-  console.log('options: ', options)
+  //console.log('options: ', options)
 //  data.datasets[2].data = props.demand
   return <div className='report'>
     <h3>Report</h3>
@@ -64,7 +64,7 @@ class App extends React.Component {
         habitat: 0
       }
     }
-    const totalHours = 10*24
+    const totalHours = 30*24
 
     for (let i=0; i<totalHours; i++) {
       const {outputKw, batteryOutputKW} = calculateOutput({ hour: i, env, state: this.state })
