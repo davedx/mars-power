@@ -42,8 +42,10 @@ const calculateOutput = (params) => {
   let batteryOutputKw = 0
 
   let supply = outputKw
+  let consumption = 0
 
   const maxBatteryCapacity = params.state.battery * caps.battery.kWhPerUnit
+  const batteryKwp = params.state.battery * caps.battery.kwPerUnit
 
   let priorities = [
     {name: 'habitat', value: habitatDemandKw, curtailed: false, usesBattery: true},
@@ -59,7 +61,10 @@ const calculateOutput = (params) => {
     if (consumed < priorities[i].value) {
       if (params.env.currentCharge > 0
         && priorities[i].usesBattery) {
-        let batteryDelta = Math.min(params.env.currentCharge, priorities[i].value - consumed)
+
+        const batteryMaxDischarge = Math.min(params.env.currentCharge, batteryKwp)
+        const batteryDelta = Math.min(batteryMaxDischarge, priorities[i].value - consumed)
+
         //console.log(`Dispatching battery for ${name}: ${batteryDelta}`)
         params.env.currentCharge -= batteryDelta
         consumed += batteryDelta
@@ -79,7 +84,7 @@ const calculateOutput = (params) => {
       let methaneDelta = (priorities[i].value/1000) /* MW */ * caps.sabatier.tonPerMWh
       params.env.currentMethane += methaneDelta
     }
-
+    consumption += consumed
   }
 
   if (supply > 0) {
@@ -90,7 +95,7 @@ const calculateOutput = (params) => {
   }
 
 
-  return {outputKw: outputKw - supply, batteryOutputKw}
+  return {outputKw: consumption, batteryOutputKw}
 }
 
 

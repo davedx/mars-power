@@ -69,7 +69,7 @@ const data = {
   ]
 };
 
-const options = {
+let options = {
   scales: {
     yAxes: [{
       id: 'A',

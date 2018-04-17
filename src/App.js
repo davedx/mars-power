@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import './App.css'
 import {Chart, Line} from 'react-chartjs-2'
 import {data, options} from './graph_config'
@@ -19,6 +20,9 @@ const Report = (props) => {
   data.labels = props.labels
   data.datasets[0].data = props.output
   data.datasets[1].data = props.batteryCharge
+  options.scales.yAxes[0].ticks.max = Math.ceil(_.max(props.output)/10)*10
+  options.scales.yAxes[1].ticks.max = Math.ceil(_.max(props.batteryCharge)/10) * 10
+  console.log('options: ', options)
 //  data.datasets[2].data = props.demand
   return <div className='report'>
     <h3>Report</h3>
@@ -100,6 +104,7 @@ class App extends React.Component {
     const pvArrayKw = this.state.pvArray * caps.pvArray.kwPerUnit
     const maxKwe = kilopowerKw + pvArrayKw
     const batteryStorageKwh = this.state.battery * caps.battery.kWhPerUnit
+    const batteryKwp = this.state.battery * caps.battery.kwPerUnit
 
     const kilopowerKg = this.state.kilopower * caps.kilopower.mass
     const pvArrayKg = this.state.pvArray * caps.pvArray.mass
@@ -135,11 +140,11 @@ class App extends React.Component {
             <div>{pvArrayKw} kWe</div>
           </div>
           <div className='control'>
-            <label>Batteries (100 kWh)</label>
+            <label>Batteries (100 kWh / 50 kW)</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'battery')}>
               {ten.map(n => <option key={n}>{n}</option>)}
             </select>
-            <div>{batteryStorageKwh} kWh</div>
+            <div>{batteryStorageKwh} kWh / {batteryKwp} kW</div>
           </div>
           <div className='control'>
             <label>Battery strategy</label>

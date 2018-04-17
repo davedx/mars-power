@@ -9,8 +9,9 @@ const caps = {
     area: 1.5 * 15 // 15 panels
   },
   battery: {
-    // Tesla 100 battery pack
+    // based on Tesla powerpack/Model S battery
     kWhPerUnit: 100,
+    kwPerUnit: 50,
     mass: 590
   },
   sabatier: {
