@@ -23,6 +23,29 @@ const data = {
       data: []
     },
     {
+      label: 'Colony power generation (kWe)',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(192,192,20,0.4)',
+      borderColor: 'rgba(192,192,20,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderWidth: 1,
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(225,225,35,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(200,200,25,1)',
+      pointHoverBorderColor: 'rgba(200,200,25,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      yAxisID: 'A',
+      data: []
+    },
+    {
       label: 'Colony battery charge (kWh)',
       fill: false,
       lineTension: 0.1,
@@ -44,29 +67,7 @@ const data = {
       pointHitRadius: 10,
       yAxisID: 'B',
       data: []
-    }/*,
-    {
-      label: 'Colony power demand (kWe)',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(192,192,20,0.4)',
-      borderColor: 'rgba(192,192,20,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(25,25,225,1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(200,200,25,1)',
-      pointHoverBorderColor: 'rgba(200,200,25,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      yAxisID: 'A',
-      data: []
-    }*/
+    }
   ]
 };
 

@@ -10,18 +10,19 @@ const ten = [0,1,2,3,4,5,6,7,8,9,10]
 const twenty = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 Chart.defaults.scale.ticks.autoSkipPadding = 20;
-// Chart.scaleService.updateScaleDefaults('linear', {
-//     ticks: {
-//         min: 0
-//     }
-// });
 
 const Report = (props) => {
   data.labels = props.labels
-  data.datasets[0].data = props.output
-  data.datasets[1].data = props.batteryCharge
-  options.scales.yAxes[0].ticks.max = Math.ceil(_.max(props.output)/10)*10
-  options.scales.yAxes[1].ticks.max = Math.ceil(_.max(props.batteryCharge)/10) * 10
+  data.datasets[0].data = props.consumption
+  data.datasets[1].data = props.generation
+  data.datasets[2].data = props.batteryCharge
+  if (props.output && props.output.length > 0) {
+    const maxConsumption = _.max(props.consumption)
+    const maxGeneration = _.max(props.generation)
+    const maxKWe = _.max(maxConsumption, maxGeneration)
+    options.scales.yAxes[0].ticks.max = Math.ceil(maxKWe/10)*10
+    options.scales.yAxes[1].ticks.max = Math.ceil(_.max(props.batteryCharge)/10) * 10
+  }
   //console.log('options: ', options)
 //  data.datasets[2].data = props.demand
   return <div className='report'>
@@ -43,18 +44,19 @@ class App extends React.Component {
       battery: 0,
       sabatier: 0,
       colonist: 0,
-      batteryCharge: [],
-      demand: [],
       methane: [],
       methaneTons: 0,
+      batteryStrategy: '0',
       labels: [],
-      output: []
+      batteryCharge: [],
+      generation: [],
+      consumption: []
     }
   }
 
   runSim() {
     // 1 month, 1 hour interval
-    const output = [], batteryCharge = [], demand = [], labels = []
+    const generation = [], consumption = [], batteryCharge = [], labels = []
     let env = {
       stormHrs: 0,
       currentCharge: 0,
@@ -67,25 +69,22 @@ class App extends React.Component {
     const totalHours = 30*24
 
     for (let i=0; i<totalHours; i++) {
-      const {outputKw, batteryOutputKW} = calculateOutput({ hour: i, env, state: this.state })
-      output.push(outputKw)
-
-      // const demandKw = calculateDemand(i, env, this.state, caps)
-      // demand.push(demandKw)
-
+      const {generationKw, consumptionKw, batteryOutputKW} = calculateOutput({ hour: i, env, state: this.state })
+      generation.push(generationKw)
+      consumption.push(consumptionKw)
       batteryCharge.push(env.currentCharge)
+
       labels.push(i)
-      //console.log(`charge: ${currentCharge}`)
     }
 
-    console.log('End methane: '+env.currentMethane)
-    console.log(`Curtailment habitat: ${(100*env.curtailed.habitat/totalHours).toFixed(2)}%`)
-    console.log(`Curtailment Sabatier: ${(100*env.curtailed.sabatier/totalHours).toFixed(2)}%`)
+    // console.log('End methane: '+env.currentMethane)
+    // console.log(`Curtailment habitat: ${(100*env.curtailed.habitat/totalHours).toFixed(2)}%`)
+    // console.log(`Curtailment Sabatier: ${(100*env.curtailed.sabatier/totalHours).toFixed(2)}%`)
     this.setState({
-      output,
-      demand,
-      labels,
+      generation,
+      consumption,
       batteryCharge,
+      labels,
       methaneTons: env.currentMethane,
       curtailed: {
         habitat: (100*env.curtailed.habitat/totalHours).toFixed(2),
@@ -149,13 +148,17 @@ class App extends React.Component {
           <div className='control'>
             <label>Battery strategy</label>
             <div>• Recharge when excess supply</div>
-            <div>• Discharge for habitat only if demand &gt; supply</div>
+            <div>• Discharge:</div>
+            <select className='bat-strat' onChange={(e) => this.setStateFromSelect(e, 'batteryStrategy')}>
+              <option value='0'>Power habitat if demand &gt; supply</option>
+              <option value='1'>Power habitat then Sabatier if demand &gt; supply</option>
+            </select>
           </div>
           <h4>Demand</h4>
           <div className='control'>
             <label>ISRU Sabatier CH<sub>4</sub> units</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'sabatier')}>
-              {ten.map(n => <option key={n}>{n}</option>)}
+              {twenty.map(n => <option key={n}>{n}</option>)}
             </select>
             <div>-{sabatierKw} kWe</div>
           </div>

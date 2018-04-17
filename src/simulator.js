@@ -38,11 +38,11 @@ const calculateOutput = (params) => {
   const sabatierDemandKw = calculateSabatierDemand(params)
   const habitatDemandKw = calculcateHabitatDemand(params)
 
-  const outputKw = kilopowerKw + pvArrayKw
+  const generationKw = kilopowerKw + pvArrayKw
   let batteryOutputKw = 0
 
-  let supply = outputKw
-  let consumption = 0
+  let supply = generationKw
+  let consumptionKw = 0
 
   const maxBatteryCapacity = params.state.battery * caps.battery.kWhPerUnit
   const batteryKwp = params.state.battery * caps.battery.kwPerUnit
@@ -51,6 +51,10 @@ const calculateOutput = (params) => {
     {name: 'habitat', value: habitatDemandKw, curtailed: false, usesBattery: true},
     {name: 'sabatier', value: sabatierDemandKw, curtailed: false, usesBattery: false}
   ]
+
+  if (params.state.batteryStrategy === '1') {
+    priorities[1].usesBattery = true
+  }
 
   for (let i = 0; i < priorities.length; i++) {
     const name = priorities[i].name
@@ -84,7 +88,7 @@ const calculateOutput = (params) => {
       let methaneDelta = (priorities[i].value/1000) /* MW */ * caps.sabatier.tonPerMWh
       params.env.currentMethane += methaneDelta
     }
-    consumption += consumed
+    consumptionKw += consumed
   }
 
   if (supply > 0) {
@@ -95,10 +99,7 @@ const calculateOutput = (params) => {
   }
 
 
-  return {outputKw: consumption, batteryOutputKw}
+  return {generationKw, consumptionKw, batteryOutputKw}
 }
 
-
-
-
-export {calculateOutput}//, calculateDemand}
+export {calculateOutput}
