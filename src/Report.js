@@ -28,15 +28,15 @@ const Report = (props) => {
       <h3 className='float-left'>Report</h3>
       <div className='float-right graph-controls'>
         <label>
-          <input type='checkbox' checked={!props.disabled.consumption} onClick={(e) => props.toggleGraphLine('consumption')} />
+          <input type='checkbox' checked={props.disabled.consumption !== true} onClick={(e) => props.toggleGraphLine('consumption')} />
           Power consumption
         </label>
         <label>
-          <input type='checkbox' checked={!props.disabled.generation} onClick={(e) => props.toggleGraphLine('generation')} />
+          <input type='checkbox' checked={props.disabled.generation !== true} onClick={(e) => props.toggleGraphLine('generation')} />
           Power generation
         </label>
         <label>
-          <input type='checkbox' checked={!props.disabled.batteryCharge} onClick={(e) => props.toggleGraphLine('batteryCharge')} />
+          <input type='checkbox' checked={props.disabled.batteryCharge !== true} onClick={(e) => props.toggleGraphLine('batteryCharge')} />
           Battery charge
         </label>
       </div>
