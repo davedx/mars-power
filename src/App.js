@@ -1,44 +1,20 @@
 import React from 'react'
-import _ from 'lodash'
 import './App.css'
-import {Chart, Line} from 'react-chartjs-2'
-import {data, options} from './graph_config'
+import Report from './Report'
+import Results from './Results'
 import {calculateOutput} from './simulator'
 import {caps} from './capabilities'
 
 const ten = [0,1,2,3,4,5,6,7,8,9,10]
 const twenty = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-
-Chart.defaults.scale.ticks.autoSkipPadding = 20;
-
-const Report = (props) => {
-  data.labels = props.labels
-  data.datasets[0].data = props.consumption
-  data.datasets[1].data = props.generation
-  data.datasets[2].data = props.batteryCharge
-  if (props.output && props.output.length > 0) {
-    const maxConsumption = _.max(props.consumption)
-    const maxGeneration = _.max(props.generation)
-    const maxKWe = _.max(maxConsumption, maxGeneration)
-    options.scales.yAxes[0].ticks.max = Math.ceil(maxKWe/10)*10
-    options.scales.yAxes[1].ticks.max = Math.ceil(_.max(props.batteryCharge)/10) * 10
-  }
-  //console.log('options: ', options)
-//  data.datasets[2].data = props.demand
-  return <div className='report'>
-    <h3>Report</h3>
-    <Line data={data} options={options} />
-  </div>
-}
-
-// 100 local dust storms per year
-// local dust storms last 2-3 days
+const hundred = [0,10,20,30,40,50,60,70,80,90,100]
 
 class App extends React.Component {
   constructor() {
     super()
 
     this.state = {
+      duration: '30',
       kilopower: 0,
       pvArray: 0,
       battery: 0,
@@ -50,12 +26,15 @@ class App extends React.Component {
       labels: [],
       batteryCharge: [],
       generation: [],
-      consumption: []
+      consumption: [],
+      disabled: {}
     }
   }
 
   runSim() {
     // 1 month, 1 hour interval
+    // 100 local dust storms per year
+    // local dust storms last 2-3 days
     const generation = [], consumption = [], batteryCharge = [], labels = []
     let env = {
       stormHrs: 0,
@@ -66,7 +45,7 @@ class App extends React.Component {
         habitat: 0
       }
     }
-    const totalHours = 30*24
+    const totalHours = parseInt(this.state.duration, 10) * 24
 
     for (let i=0; i<totalHours; i++) {
       const {generationKw, consumptionKw, batteryOutputKW} = calculateOutput({ hour: i, env, state: this.state })
@@ -77,9 +56,6 @@ class App extends React.Component {
       labels.push(i)
     }
 
-    // console.log('End methane: '+env.currentMethane)
-    // console.log(`Curtailment habitat: ${(100*env.curtailed.habitat/totalHours).toFixed(2)}%`)
-    // console.log(`Curtailment Sabatier: ${(100*env.curtailed.sabatier/totalHours).toFixed(2)}%`)
     this.setState({
       generation,
       consumption,
@@ -96,6 +72,16 @@ class App extends React.Component {
   setStateFromSelect(e, key) {
     const val = e.target.options[e.target.selectedIndex].value
     this.setState({[key]: val})
+  }
+
+  toggleGraphLine(name) {
+    const disabled = !this.state.disabled[name]
+    this.setState({
+      disabled: {
+        ...this.state.disabled,
+        [name]: disabled
+      }
+    })
   }
 
   render() {
@@ -116,6 +102,11 @@ class App extends React.Component {
     const sabatierKw = this.state.sabatier * caps.sabatier.kWPerUnit
     const colonistKw = this.state.colonist * caps.colonist.kWPerUnit
 
+    const reportProps = {
+      ...this.state,
+      toggleGraphLine: this.toggleGraphLine.bind(this)
+    }
+
     return <div>
       <div className='sim'>
         <div className='controls'>
@@ -127,21 +118,21 @@ class App extends React.Component {
           <div className='control'>
             <label>Kilopower units (10 kWe)</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'kilopower')}>
-              {ten.map(n => <option key={n}>{n}</option>)}
+              {twenty.map(n => <option key={n}>{n}</option>)}
             </select>
             <div>{kilopowerKw} kWe</div>
           </div>
           <div className='control'>
             <label>PV arrays (5 kWe)</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'pvArray')}>
-              {twenty.map(n => <option key={n}>{n}</option>)}
+              {hundred.map(n => <option key={n}>{n}</option>)}
             </select>
             <div>{pvArrayKw} kWe</div>
           </div>
           <div className='control'>
             <label>Batteries (100 kWh / 50 kW)</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'battery')}>
-              {ten.map(n => <option key={n}>{n}</option>)}
+              {twenty.map(n => <option key={n}>{n}</option>)}
             </select>
             <div>{batteryStorageKwh} kWh / {batteryKwp} kW</div>
           </div>
@@ -158,30 +149,29 @@ class App extends React.Component {
           <div className='control'>
             <label>ISRU Sabatier CH<sub>4</sub> units</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'sabatier')}>
-              {twenty.map(n => <option key={n}>{n}</option>)}
+              {hundred.map(n => <option key={n}>{n}</option>)}
             </select>
             <div>-{sabatierKw} kWe</div>
           </div>
           <div className='control'>
             <label>Life support, persons</label>
             <select onChange={(e) => this.setStateFromSelect(e, 'colonist')}>
-              {ten.map(n => <option key={n}>{n}</option>)}
+              {twenty.map(n => <option key={n}>{n}</option>)}
             </select>
             <div>-{colonistKw} kWe</div>
           </div>
+          <div className='control'>
+            <label>Simulation duration</label>
+            <select onChange={(e) => this.setStateFromSelect(e, 'duration')}>
+              <option value='30'>30 days</option>
+              <option value='90'>90 days</option>
+              <option value='300'>300 days</option>
+            </select>
+          </div>
           <button onClick={(e) => this.runSim()}>Run sim</button>
-          <h4>Results</h4>
-          {this.state.methaneTons > 0 && <div className='control'>
-            <label>Methane</label>
-            <div>{(this.state.methaneTons*1000).toFixed(1)} kg</div>
-          </div>}
-          {this.state.curtailed && <div className='control'>
-            <label>Curtailment</label>
-            <div>Habitat: {this.state.curtailed.habitat}%</div>
-            <div>Sabatier: {this.state.curtailed.sabatier}%</div>
-          </div>}
+          <Results {...this.state} />
         </div>
-        <Report {...this.state} />
+        <Report {...reportProps} />
       </div>
       <div className='refs'>
         <h3>Notes</h3>

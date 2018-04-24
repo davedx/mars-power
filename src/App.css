@@ -40,3 +40,20 @@ select {
 .bat-strat {
   width: 300px;
 }
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.graph-controls {
+  padding: 10px;
+}
+.graph-controls label {
+  margin-right: 15px;
+}
+.graph-controls input {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}

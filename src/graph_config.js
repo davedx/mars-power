@@ -1,7 +1,7 @@
 const data = {
   datasets: [
     {
-      label: 'Colony power consumption (kWe)',
+      label: 'Power consumption (kWe)',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(192,35,35,0.4)',
@@ -23,7 +23,7 @@ const data = {
       data: []
     },
     {
-      label: 'Colony power generation (kWe)',
+      label: 'Power generation (kWe)',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(192,192,20,0.4)',
@@ -46,7 +46,7 @@ const data = {
       data: []
     },
     {
-      label: 'Colony battery charge (kWh)',
+      label: 'Battery charge (kWh)',
       fill: false,
       lineTension: 0.1,
       backgroundColor: 'rgba(75,192,192,0.4)',
