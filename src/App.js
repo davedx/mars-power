@@ -109,6 +109,7 @@ class App extends React.Component {
 
     return <div>
       <div className='sim'>
+        <div className='sim-top'><h3>Mars Colony Power Simulator</h3> <a className='sim-code' href='https://github.com/davedx/mars-power'>Source code</a></div>
         <div className='controls'>
           <h3>Simulation parameters</h3>
           <h4>Supply</h4>
